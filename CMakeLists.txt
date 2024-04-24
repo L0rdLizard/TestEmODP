@@ -8,7 +8,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(YOUR_LIBRARY REQUIRED libemodp)
 
 add_executable(TestEmODP
-        hello.cpp)
+        hello.cpp common/cm_error_handler.c common/cm_pktio.c common/cm_setup.c)
 
 target_include_directories(TestEmODP PUBLIC ${YOUR_LIBRARY_INCLUDE_DIRS})
 target_link_libraries(TestEmODP ${YOUR_LIBRARY_LIBRARIES})
