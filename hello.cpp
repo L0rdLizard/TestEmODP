@@ -44,6 +44,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 #include <event_machine.h>
 #include <event_machine/platform/env/environment.h>
 
@@ -146,11 +147,13 @@ test_init(void)
     int core = em_core_id();
 
     if (core == 0) {
-        hello_shm = env_shared_reserve("HelloSharedMem",
-                                       sizeof(hello_shm_t));
+//        hello_shm = env_shared_reserve("HelloSharedMem",
+//                                       sizeof(hello_shm_t));
+        hello_shm = static_cast<hello_shm_t *>(env_shared_reserve("HelloSharedMem",
+                                                                  sizeof(hello_shm_t)));
         em_register_error_handler(test_error_handler);
     } else {
-        hello_shm = env_shared_lookup("HelloSharedMem");
+        hello_shm = static_cast<hello_shm_t *>(env_shared_lookup("HelloSharedMem"));
     }
 
     if (hello_shm == NULL) {
@@ -350,7 +353,7 @@ hello_start(my_eo_context_t *eo_ctx, em_eo_t eo, const em_eo_conf_t *conf)
         test_fatal_if(event == EM_EVENT_UNDEF,
                       "Event allocation failed!");
 
-        hello = em_event_pointer(event);
+        hello = static_cast<hello_event_t *>(em_event_pointer(event));
         hello->dest = queue;
         hello->seq = 0;
 
@@ -421,7 +424,7 @@ hello_receive_event(my_eo_context_t *eo_ctx, em_event_t event,
         return;
     }
 
-    hello = em_event_pointer(event);
+    hello = static_cast<hello_event_t *>(em_event_pointer(event));
 
     dest = hello->dest;
     hello->dest = queue;
